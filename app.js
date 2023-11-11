@@ -9,9 +9,19 @@ function loadMapScenario() {
 
     navigator.geolocation.getCurrentPosition(initializeMap);
 
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 1000,
+        maximumAge: 0,
+        frequency: 1000,  // Update every 5 seconds
+        distanceFilter: 10 // Minimum distance of 10 meters
+    };
+
     // Start tracking user's location
-    navigator.geolocation.watchPosition(updateLocation);
+    navigator.geolocation.watchPosition(updateLocation, handleLocationError, options);
 }
+
+
 
 function initializeMap(position) {
     const loc = new Microsoft.Maps.Location(position.coords.latitude, position.coords.longitude);
@@ -49,3 +59,24 @@ function updateLocation(position) {
     // Update the line to include the new position
     line.setLocations(previousPositions);
 }
+
+function handleLocationError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            console.error("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            console.error("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            console.error("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            console.error("An unknown error occurred.");
+            break;
+    }
+}
+
+
+
+
